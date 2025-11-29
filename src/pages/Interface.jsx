@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import Image from "../assets/imgs/red-fresh-tomatoes-gathered-into-cardboaard-boxes-purchasing (1).jpg";
+import { database } from "../firebase";
+import { ref, onValue } from "firebase/database";
 
 const Interface = () => {
   const [temp, setTemp] = useState(0);
@@ -76,14 +78,45 @@ const Interface = () => {
     setDoorStatus("CLOSED");
   }
 
+  // React.useEffect(() => {
+  //   fetchData();
+
+  //   const interval = setInterval(() => {
+  //     fetchData();
+  //   }, 2000);
+
+  //   return () => clearInterval(interval);
+  // }, []);
+
   React.useEffect(() => {
-    fetchData();
+    // subscribe to realtime updates at the path 'sensors'
+    const sensorsRef = ref(database, "sensors"); // <-- change this to your actual path
+    const unsubscribe = onValue(sensorsRef, (snapshot) => {
+      const data = snapshot.val();
+      if (!data) return;
 
-    const interval = setInterval(() => {
-      fetchData();
-    }, 2000);
+      const tempValue = data.temp ?? 0;
+      const humidityValue = data.humidity ?? 0;
+      const weightValue = data.weight ?? 0;
 
-    return () => clearInterval(interval);
+      setTemp(tempValue);
+      setHumidity(humidityValue);
+      setWeight(weightValue);
+      setTempStatus(getTempStatus(tempValue));
+      setHumidityStatus(getHumidityStatus(humidityValue));
+
+      setFanStatus(data.fanStatus ?? "OFF");
+      setCoolingStatus(data.coolingStatus ?? "OFF");
+      setHumidifierStatus(data.humidifierStatus ?? "OFF");
+      setDoorStatus(data.doorStatus ?? "CLOSED");
+
+      setFanSwitch((data.fanStatus ?? "OFF") === "ON");
+      setCoolingSwitch((data.coolingStatus ?? "OFF") === "ON");
+      setHumidifierSwitch((data.humidifierStatus ?? "OFF") === "ON");
+      setDoorSwitch((data.doorStatus ?? "CLOSED") === "OPEN");
+    });
+
+    return () => unsubscribe();
   }, []);
 
   return (
