@@ -163,10 +163,10 @@ const Interface = () => {
   }
 
   // Convert weight from kg to grams for display (optional)
-  const weightInGrams = (weight * 1000).toFixed(0);
-  const weightPercentage = Math.min((weight / 0.05) * 100, 100); // Assuming 0-50g range
-  const weightColor = weight >= 0.04 ? "bg-red-500" : 
-                     weight >= 0.03 ? "bg-yellow-500" : 
+  const weightInGrams = (weight * 1).toFixed(0);
+  const weightPercentage = Math.min((weight / 20) * 100); // Assuming 0-50g range
+  const weightColor = weight >= 15 ? "bg-red-500" : 
+                     weight >= 7 ? "bg-yellow-500" : 
                      "bg-green-500";
 
   return (
@@ -232,7 +232,7 @@ const Interface = () => {
                     <div className="text-5xl font-bold text-gray-800 mb-2">
                       {weight}kg
                       <div className="text-sm text-gray-500 mt-1">
-                        ({weightInGrams}g)
+                        ({weightInGrams/0.01}g)
                       </div>
                     </div>
                     
@@ -247,7 +247,7 @@ const Interface = () => {
                       <div className="flex justify-between text-sm text-gray-600 mt-1">
                         <span>0kg</span>
                         <span className="font-semibold"/*>{weightInGrams}g<*/></span>
-                        <span>50kg</span>
+                        <span>20kg</span>
                       </div>
                     </div>
                   </div>
